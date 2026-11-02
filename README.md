@@ -13,11 +13,17 @@ Wake your home server and put it back to sleep from your Mac's menu bar, so it o
 
 ## Install
 
-1. Download `Spark.zip` from the [latest release](https://github.com/koryei/spark/releases/latest) and drag **Spark.app** into Applications.
-2. Right-click it and choose **Open** the first time.
-3. Follow the **[setup guide](docs/setup.md)** to connect it to your server. It takes about 15 minutes and checks each step as you go.
+1. Paste this into Terminal. It installs Spark and opens it:
+
+   ```sh
+   curl -L https://github.com/koryei/spark/releases/latest/download/Spark.zip -o /tmp/Spark.zip && unzip -oq /tmp/Spark.zip -d /Applications && open /Applications/Spark.app
+   ```
+
+2. Follow the **[setup guide](docs/setup.md)** to connect it to your server. It takes about 15 minutes and checks each step as you go.
 
 Requires macOS 13 or newer and a Linux server on the same network.
+
+**Downloaded the zip in your browser instead?** macOS will say it "could not verify" Spark, because the app isn't signed with a paid Apple developer account. It's safe to open, and the code is all here. To open it: try opening Spark once, then go to **System Settings → Privacy & Security**, scroll down to the message about Spark, and click **Open Anyway**.
 
 ## How it works
 
