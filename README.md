@@ -1,13 +1,7 @@
 # Spark
 
 A macOS menu bar app that wakes a home server with Wake-on-LAN and puts it back to sleep over SSH, so it only draws power when you use it. Plus a one-screen landing page for it.
-
-```
-app/   Swift menu bar app (AppKit, no dependencies)
-web/   static landing page, deploys to Vercel as-is
-```
-
-## Menu bar app
+## Installation
 
 Build and run (needs the Xcode command line tools):
 
