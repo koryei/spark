@@ -43,7 +43,3 @@ On first launch choose **Open config…** from the bolt icon. That creates `~/.c
    ```
 
 Wake-on-LAN works best over Ethernet and from the same network.
-
-## Landing page
-
-`web/index.html` is a single static file. In Vercel set the project's root directory to `web`. To enable the download button, zip the built app into `web/Spark.zip` (it is git-ignored).
