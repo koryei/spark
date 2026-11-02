@@ -19,6 +19,7 @@
   --menu: #ffffff;
   --menu-ink: #0e1822;
   --menu-hover: #e4f1fc;
+  --code-bg: rgba(14, 24, 34, .1);
 
   --step-small: clamp(0.875rem, 0.84rem + 0.1vw, 0.9375rem);
   --step-body: clamp(1.125rem, 1.05rem + 0.3vw, 1.3125rem);
@@ -33,6 +34,7 @@ html[data-state="asleep"] {
   --menu: #1b2a38;
   --menu-ink: #ffffff;
   --menu-hover: #26394b;
+  --code-bg: rgba(255, 255, 255, .1);
 }
 
 * { box-sizing: border-box; margin: 0; }
@@ -145,6 +147,22 @@ html[data-state="awake"] .switch .thumb { transform: translateX(.95em); }
   @keyframes shutter { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
 }
 
+/* the Terminal install line: real code, set as a block one tone step off the ground */
+.install { margin-top: 20px; max-width: 520px; font-size: var(--step-small); }
+.install-head { display: flex; justify-content: space-between; align-items: center; }
+.copy {
+  appearance: none; border: 0; background: none; color: inherit; font: inherit; cursor: pointer;
+  min-height: 44px; padding: 0 0 0 16px;
+  text-decoration: underline; text-underline-offset: .2em;
+}
+.copy:active { transform: scale(.96); }
+.copy:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.install pre { background: var(--code-bg); padding: 14px 16px; }
+.install code {
+  font: 13px/1.55 ui-monospace, "SF Mono", Menlo, monospace;
+  white-space: pre-wrap; overflow-wrap: anywhere; user-select: all;
+}
+
 @media (max-width: 760px) {
   .foot { display: flex; flex-direction: column; align-items: stretch; gap: 40px; }
   .btn { width: 100%; }
@@ -167,6 +185,14 @@ html[data-state="awake"] .switch .thumb { transform: translateX(.95em); }
     <div class="pitch">
       <p class="rise" style="--i:3">A menu bar app that wakes your home server with Wake-on-LAN and suspends it over SSH, so it only draws power when you use it.</p>
       <a class="btn rise" style="--i:4" href="https://github.com/koryei/spark/releases/latest/download/Spark.zip">Download for Mac</a>
+
+      <div class="install rise" style="--i:5">
+        <div class="install-head">
+          <span>Or install with Terminal</span>
+          <button class="copy" id="copy" type="button" data-label="Copy">Copy</button>
+        </div>
+        <pre><code id="cmd">curl -L https://github.com/koryei/spark/releases/latest/download/Spark.zip -o /tmp/Spark.zip && unzip -oq /tmp/Spark.zip -d /Applications && open /Applications/Spark.app</code></pre>
+      </div>
     </div>
 
     <div class="menu" data-ui aria-label="Spark menu preview">
@@ -199,6 +225,23 @@ html[data-state="awake"] .switch .thumb { transform: translateX(.95em); }
   wake.addEventListener('click', function () { set('awake'); });
   sleep.addEventListener('click', function () { set('asleep'); });
   set('awake');
+
+  // Copy the install command. The button text changes, so the result never depends on colour or motion.
+  var copy = document.getElementById('copy');
+  var cmd = document.getElementById('cmd');
+  copy.addEventListener('click', function () {
+    var done = function () {
+      copy.textContent = 'Copied';
+      setTimeout(function () { copy.textContent = copy.getAttribute('data-label'); }, 1800);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(cmd.textContent).then(done, function () {});
+    } else {
+      var r = document.createRange(); r.selectNodeContents(cmd);
+      var sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      try { document.execCommand('copy'); done(); } catch (e) {}
+    }
+  });
 })();
 </script>
 </body>
