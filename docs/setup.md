@@ -1,6 +1,6 @@
 # Set up Spark
 
-This takes about 15 minutes, once. Do the steps in order. Each ends with a **Check** so you know it worked before moving on.
+This takes about 5 minutes, once. Do the steps in order. Each ends with a **Check** so you know it worked before moving on.
 
 **You need**
 
