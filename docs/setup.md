@@ -10,15 +10,15 @@ This takes about 15 minutes, once. Do the steps in order. Each ends with a **Che
 
 ## 1. Install Spark
 
-Download `Spark.zip` from the [latest release](https://github.com/koryei/spark/releases/latest), unzip it, and drag **Spark.app** into your Applications folder.
-
-The first time, right-click Spark and choose **Open**, then **Open** again. If macOS says the app is "damaged", run this once in Terminal and open it again:
+Paste this into Terminal on your Mac. It installs Spark and opens it:
 
 ```sh
-xattr -dr com.apple.quarantine /Applications/Spark.app
+curl -L https://github.com/koryei/spark/releases/latest/download/Spark.zip -o /tmp/Spark.zip && unzip -oq /tmp/Spark.zip -d /Applications && open /Applications/Spark.app
 ```
 
 **Check:** a bolt icon appears in the menu bar and the **Spark Settings** window opens. Leave it open.
+
+**Downloaded the zip in your browser instead?** macOS will say it "could not verify" Spark, because the app isn't signed with a paid Apple developer account. It's safe to open, and the code is public. Try opening Spark once, then go to **System Settings → Privacy & Security**, scroll down to the message about Spark, and click **Open Anyway**.
 
 ## 2. Find your server's details (on the server)
 
