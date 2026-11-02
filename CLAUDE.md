@@ -9,8 +9,7 @@ Private tool for one user: a macOS menu bar app that wakes a home server (Wake-o
 ## Decisions
 - No website backend: the app talks to the server directly (UDP broadcast, system `ssh`).
 - Page passes `inspect.mjs` only with `--allow few-pictures,still-page,no-footage`: those rules target multi-section pages, and this one is a single viewport by request.
-- `web/Spark.zip` (the download) is git-ignored; build it locally.
-
+- The download button links to the repo's GitHub Releases page (owner's change); `web/Spark.zip` is git-ignored and no longer needed.
 - Setup guide lives in `docs/setup.md` (a GitHub wiki can't be created by API, so docs are in the repo). The in-app hints refer to its step 3 (key) and step 4 (sudo rule): keep those numbers stable.
 - Verification without a screen: `screencapture` is blocked, so the Settings window was checked by rendering its content view to PNG from a small throwaway harness.
 
