@@ -4,10 +4,10 @@ import AppKit
 final class SettingsController: NSObject, NSWindowDelegate, NSTextFieldDelegate {
     private let window: NSWindow
     private let name = SettingsController.field("homeserver")
-    private let mac = SettingsController.field("c0:47:0e:fa:44:17")
-    private let host = SettingsController.field("10.0.0.232")
+    private let mac = SettingsController.field("aa:bb:cc:dd:ee:ff")
+    private let host = SettingsController.field("192.168.1.50")
     private let port = SettingsController.field("22")
-    private let broadcast = SettingsController.field("10.0.0.255")
+    private let broadcast = SettingsController.field("192.168.1.255")
     private let user = SettingsController.field("your username on the server")
     private let key = SettingsController.field("~/.ssh/spark")
     private let status = NSTextField(wrappingLabelWithString: "")

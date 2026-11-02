@@ -47,16 +47,16 @@ struct Config: Codable, Equatable {
         if name.isEmpty { return "Give the server a name." }
         let macBytes = mac.split(whereSeparator: { $0 == ":" || $0 == "-" })
         if macBytes.count != 6 || !macBytes.allSatisfy({ UInt8($0, radix: 16) != nil }) {
-            return "The MAC address should look like c0:47:0e:fa:44:17."
+            return "The MAC address should look like aa:bb:cc:dd:ee:ff."
         }
-        if host.isEmpty { return "Enter the server's address, e.g. 10.0.0.232." }
-        if !Config.isIPv4(broadcast) { return "The broadcast address should look like 10.0.0.255." }
+        if host.isEmpty { return "Enter the server's address, e.g. 192.168.1.50." }
+        if !Config.isIPv4(broadcast) { return "The broadcast address should look like 192.168.1.255." }
         if user.isEmpty { return "Enter the username you log in to the server with." }
         if !(1...65535).contains(port) { return "The port should be a number, usually 22." }
         return nil
     }
 
-    /// Guesses the broadcast address from a server address: 10.0.0.232 becomes 10.0.0.255.
+    /// Guesses the broadcast address from a server address: 192.168.1.50 becomes 192.168.1.255.
     static func guessBroadcast(from host: String) -> String? {
         let h = host.trimmingCharacters(in: .whitespaces).components(separatedBy: "/").first ?? ""
         guard isIPv4(h) else { return nil }
