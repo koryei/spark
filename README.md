@@ -1,9 +1,5 @@
-# Spark
-
+# **[Spark](https://spark.koryei.tech)**
 Wake your home server and put it back to sleep from your Mac's menu bar, so it only uses power when you need it.
-
-**[spark.koryei.tech](https://spark.koryei.tech)**
-
 ![The Spark menu in the macOS menu bar](docs/images/menu.png)
 
 <p>
