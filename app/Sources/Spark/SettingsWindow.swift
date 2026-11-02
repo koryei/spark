@@ -109,12 +109,14 @@ final class SettingsController: NSObject, NSWindowDelegate, NSTextFieldDelegate 
         root.edgeInsets = NSEdgeInsets(top: 24, left: 24, bottom: 20, right: 24)
         root.setCustomSpacing(14, after: login)
         buttons.widthAnchor.constraint(equalToConstant: 432).isActive = true
+        root.widthAnchor.constraint(equalToConstant: 480).isActive = true // keeps the right margin
 
         window.contentView = root
         window.setContentSize(root.fittingSize)
     }
 
     private func fill() {
+        window.makeFirstResponder(nil) // end any edit in progress so the fields show the new values
         let c = Config.exists ? try? Config.load() : nil
         name.stringValue = c?.name ?? "homeserver"
         mac.stringValue = c?.mac ?? ""
@@ -190,9 +192,21 @@ final class SettingsController: NSObject, NSWindowDelegate, NSTextFieldDelegate 
             .font: NSFont.systemFont(ofSize: 12),
             .foregroundColor: bad ? NSColor.systemRed : NSColor.secondaryLabelColor,
         ])
+        fit()
     }
 
-    private func showChecks(_ checks: [Check]) {
+    /// Grows or shrinks the window to fit the status text, keeping its top edge where it is.
+    private func fit() {
+        guard let root = window.contentView else { return }
+        root.layoutSubtreeIfNeeded()
+        let target = window.frameRect(forContentRect: NSRect(origin: .zero, size: root.fittingSize))
+        var frame = window.frame
+        frame.origin.y += frame.height - target.height
+        frame.size.height = target.height
+        window.setFrame(frame, display: true, animate: false)
+    }
+
+    func showChecks(_ checks: [Check]) {
         let out = NSMutableAttributedString()
         for ch in checks {
             let line = "\(ch.ok ? "✓" : "✗")  \(ch.title)\n"
@@ -212,5 +226,6 @@ final class SettingsController: NSObject, NSWindowDelegate, NSTextFieldDelegate 
             ]))
         }
         status.attributedStringValue = out
+        fit()
     }
 }
