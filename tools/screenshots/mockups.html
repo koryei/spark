@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Spark mockups</title>
+<style>
+:root { --sky:#6bb4ee; --ink:#0e1822; --accent:#ff5a1f; }
+* { box-sizing:border-box; margin:0; }
+body { background:var(--sky); font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif; color:#1d1d1f; -webkit-font-smoothing:antialiased; }
+section { display:none; }
+section:target { display:block; }
+.stage { display:flex; justify-content:center; padding:72px; }
+
+/* macOS window around a real render of Settings */
+.window { width:480px; background:#ececec; border-radius:12px; overflow:hidden; box-shadow:0 0 0 1px rgba(0,0,0,.18), 0 24px 60px rgba(14,24,34,.35); }
+.titlebar { height:28px; display:flex; align-items:center; justify-content:center; position:relative; font-size:13px; font-weight:600; color:#4a4a4a; background:#ececec; }
+.lights { position:absolute; left:12px; display:flex; gap:8px; }
+.lights i { width:12px; height:12px; border-radius:50%; background:#ff5f57; }
+.lights i:nth-child(2) { background:#febc2e; } .lights i:nth-child(3) { background:#28c840; }
+.window img { display:block; width:480px; }
+
+/* menu bar and its menu */
+.desktop { width:1200px; height:230px; position:relative; }
+.bar { position:absolute; inset:0 0 auto 0; height:32px; background:rgba(14,24,34,.88); color:#fff; display:flex; justify-content:flex-end; align-items:center; gap:20px; padding:0 14px; font-size:14px; }
+.bar .bolt { width:30px; height:24px; border-radius:6px; background:rgba(255,255,255,.22); display:grid; place-items:center; }
+.menu { position:absolute; top:38px; right:92px; width:260px; background:#fbfbfb; border-radius:10px; padding:6px; font-size:14px; box-shadow:0 0 0 1px rgba(0,0,0,.15), 0 14px 40px rgba(14,24,34,.35); }
+.menu div { display:flex; justify-content:space-between; padding:5px 10px; border-radius:5px; }
+.menu .dim { color:#8a8a8e; }
+.menu .sel { background:#0a60ff; color:#fff; }
+.menu hr { border:0; height:1px; background:rgba(0,0,0,.12); margin:5px 8px; }
+.menu .key { opacity:.6; }
+.caption { position:absolute; left:48px; bottom:48px; font:500 15px/1.4 "Georgia", serif; color:var(--ink); }
+</style></head>
+<body>
+
+<section id="menu">
+  <div class="desktop">
+    <div class="bar">
+      <span class="bolt"><svg width="14" height="16" viewBox="0 0 14 16"><path d="M8.2 0 1 9h5l-1 7 8-9H8z" fill="#fff"/></svg></span>
+      <span>Mon Nov 2&nbsp;&nbsp;5:42 PM</span>
+    </div>
+    <div class="menu">
+      <div class="dim"><span>homeserver · Awake</span></div>
+      <hr>
+      <div class="dim"><span>Wake server</span><span class="key">⌘W</span></div>
+      <div class="sel"><span>Sleep server</span><span>⌘S</span></div>
+      <hr>
+      <div><span>Settings…</span><span class="key">⌘,</span></div>
+      <div><span>Quit Spark</span><span class="key">⌘Q</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="settings"><div class="stage"><div class="window"><div class="titlebar"><span class="lights"><i></i><i></i><i></i></span>Spark Settings</div><img src="out/settings-raw.png" alt=""></div></div></section>
+<section id="test-connection"><div class="stage"><div class="window"><div class="titlebar"><span class="lights"><i></i><i></i><i></i></span>Spark Settings</div><img src="out/test-raw.png" alt=""></div></div></section>
+
+</body></html>
