@@ -10,7 +10,15 @@ About 15 minutes, once. Follow the steps in order and don't skip the **Check** l
 
 > Spark only ever runs two things on your server: `sudo systemctl suspend` to sleep it, and nothing else. It never stores your server password.
 
-## 1. Build and open Spark (on your Mac)
+## 1. Get Spark and open it (on your Mac)
+
+**Option A: download.** Get `Spark.zip` from the [latest release](https://github.com/koryei/spark/releases/latest), unzip it and drag `Spark.app` into your Applications folder. Spark isn't signed with an Apple developer ID, so macOS will refuse a normal double-click the first time. Right-click `Spark.app`, choose **Open**, then **Open** again. If macOS says the app is "damaged", run this once and open it again:
+
+```sh
+xattr -dr com.apple.quarantine /Applications/Spark.app
+```
+
+**Option B: build it.**
 
 ```sh
 git clone https://github.com/koryei/spark.git
@@ -21,7 +29,7 @@ open build/Spark.app
 
 **Check:** a bolt icon appears in the menu bar and the **Spark Settings** window opens. Leave it open.
 
-Optional: drag `build/Spark.app` into your Applications folder, then add it in System Settings → General → Login Items so it starts with your Mac.
+Optional: add Spark in System Settings → General → Login Items so it starts with your Mac.
 
 ## 2. Find your server's details (on the server)
 
