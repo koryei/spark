@@ -1,67 +1,54 @@
-# Spark setup guide
+# Set up Spark
 
-About 15 minutes, once. Follow the steps in order and don't skip the **Check** lines. Each one tells you the step worked before you move on.
+This takes about 15 minutes, once. Do the steps in order. Each ends with a **Check** so you know it worked before moving on.
 
 **You need**
 
-- A Mac running macOS 13 or newer, with the Xcode command line tools (`xcode-select --install`).
-- A home server running Linux with systemd (Ubuntu, Debian and similar), connected by an **Ethernet cable** to the same network as your Mac.
-- A way to type commands on the server: Termius, or `ssh` in Terminal. Every "on the server" step below means this.
+- A Mac (macOS 13 or newer).
+- A home server running Linux (such as Ubuntu), plugged into your router with an **Ethernet cable**.
+- A way to type commands on the server: Termius, or Terminal on your Mac using `ssh`. Every "on the server" step means this.
 
-> Spark only ever runs two things on your server: `sudo systemctl suspend` to sleep it, and nothing else. It never stores your server password.
+## 1. Install Spark
 
-## 1. Get Spark and open it (on your Mac)
+Download `Spark.zip` from the [latest release](https://github.com/koryei/spark/releases/latest), unzip it, and drag **Spark.app** into your Applications folder.
 
-**Option A: download.** Get `Spark.zip` from the [latest release](https://github.com/koryei/spark/releases/latest), unzip it and drag `Spark.app` into your Applications folder. Spark isn't signed with an Apple developer ID, so macOS will refuse a normal double-click the first time. Right-click `Spark.app`, choose **Open**, then **Open** again. If macOS says the app is "damaged", run this once and open it again:
+The first time, right-click Spark and choose **Open**, then **Open** again. If macOS says the app is "damaged", run this once in Terminal and open it again:
 
 ```sh
 xattr -dr com.apple.quarantine /Applications/Spark.app
 ```
 
-**Option B: build it.**
-
-```sh
-git clone https://github.com/koryei/spark.git
-cd spark/app
-./build.sh
-open build/Spark.app
-```
-
 **Check:** a bolt icon appears in the menu bar and the **Spark Settings** window opens. Leave it open.
-
-Optional: add Spark in System Settings → General → Login Items so it starts with your Mac.
 
 ## 2. Find your server's details (on the server)
 
-Run:
+Run these two commands:
 
 ```sh
 ip -br addr
 ip link
 ```
 
-- In the first output, find the line that is `UP` and has an address like `10.0.0.232/24`. The name at the start of that line (for example `enp0s31f6`) is your **network card name**. The address without the `/24` is the **Server address**.
-- In the second output, find the block with that same card name. The value after `link/ether` (for example `c0:47:0e:fa:44:17`) is the **MAC address**.
+- In the first result, find the line marked `UP` with an address like `192.168.1.50/24`. Your **server address** is that address without the `/24`. The word at the start of the line (for example `enp3s0`) is your **network card name**. Write it down.
+- In the second result, find the same card name. The value after `link/ether` (for example `aa:bb:cc:dd:ee:ff`) is your **MAC address**.
 
-Type those into Spark Settings:
+Enter these in Spark Settings:
 
 | Field | What to enter |
 | --- | --- |
-| Name | Anything you like, for example `homeserver` |
+| Name | Anything, for example `homeserver` |
 | MAC address | The `link/ether` value |
-| Server address | The address with no `/24` |
+| Server address | The address without `/24` |
 | SSH port | `22`, unless you changed it |
-| Broadcast | Fills in by itself, e.g. `10.0.0.255`. It is the server address with the last number replaced by `255` |
+| Broadcast | Fills in by itself. It's the server address with the last number replaced by `255` |
 | Username | The name you log in to the server with |
 
 Don't press Save yet.
 
 ## 3. Let Spark log in without a password
 
-Spark logs in with a key, because it can't type a password for you.
-
-1. In Spark Settings, press **Copy public key**. If the key doesn't exist yet, Spark creates `~/.ssh/spark` first.
-2. On the server, run the command below. Replace `PASTE_KEY_HERE` with the key you copied (⌘V), keeping the quotes:
+1. In Spark Settings, press **Copy public key**.
+2. On the server, run this. Replace `PASTE_KEY_HERE` with the key you just copied (⌘V) and keep the quotes:
 
 ```sh
 mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo "PASTE_KEY_HERE" >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys && echo DONE
@@ -71,7 +58,7 @@ mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo "PASTE_KEY_HERE" >> ~/.ssh/authorize
 
 ## 4. Allow sleeping without a password
 
-`systemctl suspend` needs administrator rights. This rule lets your user run that one command without a password, and nothing else. On the server, replace `YOUR_USERNAME` and run:
+This lets your user put the server to sleep without typing a password, and nothing else. On the server, replace `YOUR_USERNAME` and run:
 
 ```sh
 echo "YOUR_USERNAME ALL=(ALL) NOPASSWD: /usr/bin/systemctl suspend" | sudo tee /etc/sudoers.d/spark
@@ -79,49 +66,49 @@ sudo chmod 440 /etc/sudoers.d/spark
 sudo visudo -cf /etc/sudoers.d/spark
 ```
 
-**Check:** the last command prints `parsed OK`. If it prints anything else, remove the file with `sudo rm /etc/sudoers.d/spark` and try again. A broken sudoers file can stop `sudo` from working, so don't skip this check.
+**Check:** the last command prints `parsed OK`. If it prints anything else, run `sudo rm /etc/sudoers.d/spark` and try again. Don't skip this check: a mistake here can stop `sudo` from working.
 
-## 5. Turn on Wake-on-LAN (on the server)
+## 5. Turn on Wake-on-LAN
 
-This is the step that most often goes wrong. Two switches need to be on.
+This is the step that most often goes wrong. Two things need to be switched on.
 
-**a) In the BIOS.** Restart the server, open the BIOS (usually F2, F12 or Delete at boot) and enable the option called *Wake on LAN*, *Power On by PCI-E* or *Wake on PCI-E*. Names vary by maker. Also turn off any "deep sleep" or "ErP" power-saving option if you find one.
+**a) In the BIOS.** Restart the server and open its BIOS (usually by pressing F2, F12 or Delete as it starts). Turn on the option called *Wake on LAN*, *Power On by PCI-E* or similar. The name varies by manufacturer.
 
-**b) In the operating system.** Replace `enp0s31f6` with your network card name from step 2:
+**b) In Linux.** Replace `enp3s0` with your network card name from step 2:
 
 ```sh
-sudo ethtool enp0s31f6 | grep Wake-on
+sudo ethtool enp3s0 | grep Wake-on
 ```
 
-- If it shows `Wake-on: g`, you're done.
-- If it shows `Wake-on: d`, run `sudo ethtool -s enp0s31f6 wol g` and check again.
+- `Wake-on: g` means it's on. You're done.
+- `Wake-on: d` means it's off. Run `sudo ethtool -s enp3s0 wol g`, then check again.
 
-That setting is lost when the server restarts. To make it permanent on Ubuntu, open your network file (usually the only `.yaml` file in `/etc/netplan/`):
+This setting is lost when the server restarts. To keep it, on Ubuntu open your network file and add one line:
 
 ```sh
 sudo cp /etc/netplan/*.yaml ~/netplan-backup.yaml
 sudo nano /etc/netplan/*.yaml
 ```
 
-Under your network card's name, add the line `wakeonlan: true`, lined up with the other settings beneath it (netplan cares about spaces, not tabs). Then apply it safely:
+Under your network card's name, add `wakeonlan: true`, lined up with the other settings under it (use spaces, not tabs). Then apply it safely:
 
 ```sh
 sudo netplan try
 ```
 
-If you can still reach the server after pressing Enter to accept, you're done. If something breaks, it reverts by itself after 2 minutes.
+If you can still reach the server, press Enter to keep the change. If something breaks, it undoes itself after two minutes.
 
-## 6. Test and save (in Spark Settings)
+## 6. Test and save
 
-Press **Test connection**. You should see three ticks:
+In Spark Settings, press **Test connection**. You should see three ticks:
 
 ```
-✓  Reach 10.0.0.232 on port 22
+✓  Reach 192.168.1.50 on port 22
 ✓  Log in with the key, no password
 ✓  Allowed to sleep without a password
 ```
 
-If one fails, the line under it says what to fix. Then press **Save**.
+If one fails, the line under it tells you what to fix. Then press **Save**.
 
 ## 7. Try it
 
@@ -129,23 +116,20 @@ If one fails, the line under it says what to fix. Then press **Save**.
 2. Choose **Sleep server**. After a few seconds, open the menu again: it should say **Asleep**.
 3. Wait about 30 seconds, then choose **Wake server**. The server should be back within a minute.
 
-> Sleeping pauses everything on the server, including Docker containers and any service you run, until you wake it.
+Sleeping pauses everything on the server, including Docker containers, until you wake it.
 
-## Troubleshooting
+## If something goes wrong
 
 | What you see | What to do |
 | --- | --- |
-| Test says **No answer** | Check the server is on, the address is right, and your Mac is on the same network. Corporate and guest Wi-Fi often block devices from seeing each other. |
-| **The server doesn't accept this key yet** | Repeat step 3. Make sure you pasted the whole key on one line, and that the username matches. |
-| **The server still asks for a password to sleep** | Repeat step 4. The username in the rule must be the one in Settings. |
-| Sleep works but **Wake does nothing** | Step 5. Check both the BIOS setting and `Wake-on: g`. Use Ethernet on the server, not Wi-Fi. Waking from a full shutdown is less reliable than waking from sleep. |
-| Server's address changed after a reboot | Your router hands out addresses that can change. In your router settings, look for *DHCP reservation* or *static lease* and pin the server to one address. |
-| Spark says **Not set up yet** | Open **Settings…** from the bolt menu and press Save. |
-| Spark doesn't appear in the menu bar | Look for the bolt icon on the right. Crowded menu bars (or a notch) can hide it; quit another menu bar app to make room. |
+| **No answer** | Check the server is on, the address is right, and your Mac is on the same network as the server. Guest and office Wi-Fi often block this. |
+| **The server doesn't accept this key yet** | Repeat step 3. Paste the whole key on one line, and check the username matches. |
+| **The server still asks for a password to sleep** | Repeat step 4. The username in the rule must match the one in Settings. |
+| Sleep works but **Wake does nothing** | Repeat step 5. Check the BIOS setting and `Wake-on: g`, and use Ethernet, not Wi-Fi. |
+| The server's address changed after a restart | In your router settings, look for *DHCP reservation* or *static lease* and give the server a fixed address. |
+| Spark says **Not set up yet** | Choose **Settings…** from the bolt menu and press Save. |
+| No bolt icon | A crowded menu bar can hide it. Quit another menu bar app to make room. |
 
-## Where things are stored
+## Uninstall
 
-- Settings: `~/.config/spark/config.json`, which the Settings window edits for you.
-- Key: `~/.ssh/spark` and `~/.ssh/spark.pub`.
-
-To remove Spark completely, quit it, delete `Spark.app` and those files, and on the server delete `/etc/sudoers.d/spark` and the line ending in `spark` from `~/.ssh/authorized_keys`.
+Quit Spark and delete Spark.app. To remove its files, delete `~/.config/spark` and `~/.ssh/spark*` on your Mac. On the server, delete `/etc/sudoers.d/spark` and the last line of `~/.ssh/authorized_keys` (the one ending in `spark`).
